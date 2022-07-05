@@ -23,7 +23,7 @@ function compress(req, res, input) {
    * |  Header Name  |            Description            |           Value            |
    * |---------------|-----------------------------------|----------------------------|
    * |x-original-size|Original photo size                |OriginSize                  |
-   * |x-bytes-saved  |Saved bandwidth from original photo|OriginSize - Compressed Size |
+   * |x-bytes-saved  |Saved bandwidth from original photo|OriginSize - Compressed Size|
    */
   input.pipe(
     sharp()
