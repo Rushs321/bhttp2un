@@ -53,15 +53,15 @@ function proxy(req, res) {
       return compress(req, res, origin);
     } else {
       /*
-       * Downloading then uploading the buffer to the client is not a good idea though
-       * It would better if you pipe it to client instantly.
+       * Downloading then uploading the buffer to the client is not a good idea though,
+       * It would better if you pipe the incomming buffer to client instantly.
        */
 
       res.setHeader("x-proxy-bypass", 1);
-      res.setHeader(
-        "content-length",
-        response.headers["content-length"] || "0"
-      );
+      if ("content-type" in response.headers)
+        res.setHeader("content-type", response.headers["content-type"]);
+      if ("content-length" in response.headers)
+        res.setHeader("content-length", response.headers["content-length"]);
       return origin.pipe(res);
     }
   });
