@@ -11,6 +11,14 @@ const compress = require("./compress");
 const copyHeaders = require("./copyHeaders");
 
 function proxy(req, res) {
+  /*
+   * Avoid loopback that could causing server hang.
+   */
+  if (
+    req.headers["via"] == "1.1 bandwidth-hero" &&
+    ["127.0.0.1", "::1"].includes(req.headers["x-forwarded-for"] || req.ip)
+  )
+    return redirect(req, res);
   let origin = get(req.params.url, {
     headers: {
       ...pick(req.headers, ["cookie", "dnt", "referer"]),
