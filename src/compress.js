@@ -10,10 +10,12 @@ function compress(req, res, input) {
   const format = req.params.webp ? 'webp' : 'jpeg'
 
   /*
-   * Determine the uncompressed image size.
+   * Determine the uncompressed image size when there's no content-length header.
    */
-  req.params.originSize = 0;
-  input.on('data', c => req.params.originSize += c.length);
+  if (req.params.originSize < 1) {
+    req.params.originSize = 0;
+    input.on('data', c => req.params.originSize += c.length);
+  }
 
   /*
    * input.pipe => sharp (The compressor) => Send to httpResponse
@@ -32,13 +34,13 @@ function compress(req, res, input) {
         optimizeScans: true
       })
       .toBuffer((err, output, info) => {
-        if (err || !info || res.headersSent) return redirect(req, res)
+        if (err || !info || res.headersSent || info.size > req.params.originSize) return redirect(req, res);
 
-        res.setHeader('content-type', 'image/' + format)
-        res.setHeader('content-length', info.size)
+        res.setHeader('content-type', 'image/' + format);
+        res.setHeader('content-length', info.size);
         res.setHeader('x-original-size', req.params.originSize);
-        res.setHeader('x-bytes-saved', req.params.originSize - info.size)
-        res.status(200)
+        res.setHeader('x-bytes-saved', req.params.originSize - info.size);
+        res.status(200);
         res.write(output);
         res.end();
       })
