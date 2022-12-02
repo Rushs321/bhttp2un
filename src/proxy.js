@@ -58,7 +58,7 @@ function proxy(req, res) {
       /*
        * sharp support stream. So pipe it.
        */
-      return compress(req, res, origin);
+      return compress(req, res, origin, headers);
     } else {
       /*
        * Downloading then uploading the buffer to the client is not a good idea though,

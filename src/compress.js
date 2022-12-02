@@ -32,7 +32,7 @@ function compress(req, res, input) {
         quality: req.params.quality,
         progressive: true,
         optimizeScans: true,
-        lossless: true
+        lossless: true,
       })
       .toBuffer((err, output, info) => {
         if (err || !info || res.headersSent || info.size > req.params.originSize) return redirect(req, res);
