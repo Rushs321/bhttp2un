@@ -62,7 +62,7 @@ function proxy(req, res) {
     } else {
       /*
        * Downloading then uploading the buffer to the client is not a good idea though,
-       * It would better if you pipe the incomming buffer to client instantly.
+       * It would better if you pipe the incomming buffer to client directly.
        */
 
       res.setHeader("x-proxy-bypass", 1);
