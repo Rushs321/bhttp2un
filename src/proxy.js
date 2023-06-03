@@ -34,45 +34,48 @@ function proxy(req, res) {
     jar: true,
   });
 
+  origin.on("error", () => _onRequestError(req, res, origin));
+  origin.on("response", _ => _onRequestResponse(_, req, res, origin));
+}
+
+function _onRequestError(req, res, origin) {
   /*
    * When there's a error, Redirect then destroy the stream immediately.
    */
+  redirect(req, res);
+  return origin.destroy();
+}
 
-  origin.on("error", () => {
+function _onRequestResponse(response, req, res, origin) {
+  if (res.statusCode >= 400) {
     redirect(req, res);
     return origin.destroy();
-  });
+  }
 
-  origin.on("response", (response) => {
-    if (res.statusCode >= 400) {
-      redirect(req, res);
-      return origin.destroy();
-    }
+  copyHeaders(response, res);
+  res.setHeader("content-encoding", "identity");
+  req.params.originType = response.headers["content-type"] || "";
+  req.params.originSize = response.headers["content-length"] || "0";
 
-    copyHeaders(response, res);
-    res.setHeader("content-encoding", "identity");
-    req.params.originType = response.headers["content-type"] || "";
-    req.params.originSize = response.headers["content-length"] || "0";
+  if (shouldCompress(req)) {
+    /*
+     * sharp support stream. So pipe it.
+     */
+    return compress(req, res, origin);
+  } else {
+    /*
+     * Downloading then uploading the buffer to the client is not a good idea though,
+     * It would better if you pipe the incomming buffer to client directly.
+     */
 
-    if (shouldCompress(req)) {
-      /*
-       * sharp support stream. So pipe it.
-       */
-      return compress(req, res, origin);
-    } else {
-      /*
-       * Downloading then uploading the buffer to the client is not a good idea though,
-       * It would better if you pipe the incomming buffer to client directly.
-       */
-
-      res.setHeader("x-proxy-bypass", 1);
-      if ("content-type" in response.headers)
-        res.setHeader("content-type", response.headers["content-type"]);
-      if ("content-length" in response.headers)
-        res.setHeader("content-length", response.headers["content-length"]);
-      return origin.pipe(res);
-    }
-  });
+    res.setHeader("x-proxy-bypass", 1);
+    if ("content-type" in response.headers)
+      res.setHeader("content-type", response.headers["content-type"]);
+    if ("content-length" in response.headers)
+      res.setHeader("content-length", response.headers["content-length"]);
+    return origin.pipe(res);
+  }
 }
+
 
 module.exports = proxy;

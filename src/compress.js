@@ -34,18 +34,21 @@ function compress(req, res, input) {
         optimizeScans: true,
         lossless: true,
       })
-      .toBuffer((err, output, info) => {
-        if (err || !info || res.headersSent || info.size > req.params.originSize) return redirect(req, res);
-
-        res.setHeader('content-type', 'image/' + format);
-        res.setHeader('content-length', info.size);
-        res.setHeader('x-original-size', req.params.originSize);
-        res.setHeader('x-bytes-saved', req.params.originSize - info.size);
-        res.status(200);
-        res.write(output);
-        res.end();
-      })
-    );
+      .toBuffer((err, output, info) => _sendResponse(err, output, info, req, res))
+  );
 }
 
-module.exports = compress
+function _sendResponse(err, output, info, req, res) {
+  if (err || !info || res.headersSent || info.size > req.params.originSize) return redirect(req, res);
+
+  res.setHeader('content-type', 'image/' + format);
+  res.setHeader('content-length', info.size);
+  res.setHeader('x-original-size', req.params.originSize);
+  res.setHeader('x-bytes-saved', req.params.originSize - info.size);
+  res.status(200);
+  res.write(output);
+  res.end();
+}
+
+
+module.exports = compress;
