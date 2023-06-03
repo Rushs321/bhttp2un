@@ -21,7 +21,7 @@ function proxy(req, res) {
     return redirect(req, res);
   let origin = get(req.params.url, {
     headers: {
-      ...pick(req.headers, ["cookie", "dnt", "referer"]),
+      ...pick(req.headers, ["cookie", "dnt", "referer", "range"]),
       "user-agent": "Bandwidth-Hero Compressor",
       "x-forwarded-for": req.headers["x-forwarded-for"] || req.ip,
       via: "1.1 bandwidth-hero",
@@ -68,11 +68,15 @@ function _onRequestResponse(response, req, res, origin) {
      * It would better if you pipe the incomming buffer to client directly.
      */
 
+    console.log(`Worker ${process.pid}:`, `Proxying ${req.params.url}....`);
+
     res.setHeader("x-proxy-bypass", 1);
-    if ("content-type" in response.headers)
-      res.setHeader("content-type", response.headers["content-type"]);
-    if ("content-length" in response.headers)
-      res.setHeader("content-length", response.headers["content-length"]);
+
+    for (headerName of ["accept-ranges", "content-type", "content-length", "content-range"]) {
+      if (headerName in response.headers)
+        res.setHeader(headerName, response.headers[headerName]);
+    }
+
     return origin.pipe(res);
   }
 }

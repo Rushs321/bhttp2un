@@ -39,6 +39,7 @@ function compress(req, res, input) {
 
 function _sendResponse(err, output, info, format, req, res) {
   if (err || !info || res.headersSent || info.size > req.params.originSize) return redirect(req, res);
+  console.log(`Worker ${process.pid}:`, `Saved ${req.params.originSize - info.size} bytes from ${req.params.url}`);
 
   res.setHeader('content-type', 'image/' + format);
   res.setHeader('content-length', info.size);
