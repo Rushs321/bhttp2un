@@ -31,8 +31,7 @@ function compress(req, res, input) {
       .toFormat(format, {
         quality: req.params.quality,
         progressive: true,
-        optimizeScans: true,
-        lossless: true,
+        optimizeScans: true
       })
       .toBuffer((err, output, info) => _sendResponse(err, output, info, format, req, res))
   );
