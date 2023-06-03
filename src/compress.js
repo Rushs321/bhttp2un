@@ -34,11 +34,11 @@ function compress(req, res, input) {
         optimizeScans: true,
         lossless: true,
       })
-      .toBuffer((err, output, info) => _sendResponse(err, output, info, req, res))
+      .toBuffer((err, output, info) => _sendResponse(err, output, info, format, req, res))
   );
 }
 
-function _sendResponse(err, output, info, req, res) {
+function _sendResponse(err, output, info, format, req, res) {
   if (err || !info || res.headersSent || info.size > req.params.originSize) return redirect(req, res);
 
   res.setHeader('content-type', 'image/' + format);
