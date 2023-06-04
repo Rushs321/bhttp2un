@@ -68,8 +68,6 @@ function _onRequestResponse(response, req, res, origin) {
      * It would better if you pipe the incomming buffer to client directly.
      */
 
-    console.log(`Worker ${process.pid}:`, `Proxying ${req.params.url}....`);
-
     res.setHeader("x-proxy-bypass", 1);
 
     for (headerName of ["accept-ranges", "content-type", "content-length", "content-range"]) {

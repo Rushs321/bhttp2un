@@ -8,8 +8,6 @@ function redirect(req, res) {
   res.removeHeader('etag');
   res.setHeader('location', encodeURI(req.params.url));
   res.status(302).end();
-
-  console.log(`Worker ${process.pid}:`, `Redirected to ${req.params.url}`);
 }
 
 module.exports = redirect
