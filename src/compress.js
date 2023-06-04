@@ -6,7 +6,7 @@
 const sharp = require('sharp')
 const redirect = require('./redirect')
 
-const sharpStream = _ => sharp({ animated: true, unlimited: true });
+const sharpStream = _ => sharp({ animated: !process.env.NO_ANIMATE, unlimited: true });
 
 function compress(req, res, input) {
   const format = req.params.webp ? 'webp' : 'jpeg'
