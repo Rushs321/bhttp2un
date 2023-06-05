@@ -3,10 +3,10 @@
 const cluster = require("cluster");
 const os = require("os");
 
-const numClusters = os.availableParallelism ? os.availableParallelism() : (os.cpus().length || 2)
-
 if (cluster.isPrimary) {
-  console.log(`Primary ${process.pid} is running`);
+  const numClusters = process.env.CLUSTERS || (os.availableParallelism ? os.availableParallelism() : (os.cpus().length || 2))
+
+  console.log(`Primary ${process.pid} is running. Will fork ${numClusters} clusters.`);
 
   // Fork workers.
   for (let i = 0; i < numClusters; i++) {

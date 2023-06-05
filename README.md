@@ -35,3 +35,5 @@ node server.js
 ```
 
 You may change / set `PORT` env variable if you want to listen to another port.
+
+If you think your forked cluster is less than 2, You could set `CLUSTERS` env variable with integer value depending how many clusters you would like to fork.
