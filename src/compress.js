@@ -14,10 +14,6 @@ function compress(req, res, input) {
   /*
    * Determine the uncompressed image size when there's no content-length header.
    */
-  if (req.params.originSize < 1) {
-    req.params.originSize = 0;
-    input.on('data', c => req.params.originSize += c.length);
-  }
 
   /*
    * input.pipe => sharp (The compressor) => Send to httpResponse
@@ -27,18 +23,18 @@ function compress(req, res, input) {
    * |x-original-size|Original photo size                |OriginSize                  |
    * |x-bytes-saved  |Saved bandwidth from original photo|OriginSize - Compressed Size|
    */
-  input.pipe(sharpStream())
+  input.body.pipe(sharpStream()
     .grayscale(req.params.grayscale)
     .toFormat(format, {
       quality: req.params.quality,
       progressive: true,
       optimizeScans: true
     })
-    .toBuffer((err, output, info) => _sendResponse(err, output, info, format, req, res))
+    .toBuffer((err, output, info) => _sendResponse(err, output, info, format, req, res)))
 }
 
 function _sendResponse(err, output, info, format, req, res) {
-  if (err || !info || res.headersSent || info.size > req.params.originSize) return redirect(req, res);
+  if (err || !info) return redirect(req, res);
 
   res.setHeader('content-type', 'image/' + format);
   res.setHeader('content-length', info.size);
