@@ -30,7 +30,6 @@ async function proxy(req, res) {
     });
     _onRequestResponse(origin, req, res);
   } catch (err) {
-    if (err === undici.errors.RequestAbortedError) return; // ignore aborted request
     _onRequestError(req, res, err);
   }
 }
@@ -44,18 +43,15 @@ function _onRequestError(req, res, err) {
 }
 
 function _onRequestResponse(origin, req, res) {
-  if (origin.statusCode >= 400) {
-    redirect(req, res);
-    return origin.body.destroy();
-  }
+  if (origin.statusCode >= 400)
+    return redirect(req, res);
 
   // handle redirects
   if (origin.statusCode >= 300 && origin.headers.location) {
     const redir = origin.headers.location;
     const sourceHost = new URL(req.params.url);
     req.params.url = redir.startsWith("/") ? (sourceHost.origin + redir) : redir;
-    proxy(req, res);
-    return origin.body.destroy();
+    return proxy(req, res);
   }
 
   copyHeaders(origin, res);
