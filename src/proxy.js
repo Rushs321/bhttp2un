@@ -43,13 +43,13 @@ function _onRequestError(req, res, err) {
 }
 
 function _onRequestResponse(origin, req, res) {
-  if (res.statusCode >= 400) {
+  if (origin.statusCode >= 400) {
     redirect(req, res);
     return origin.destroy();
   }
 
   // handle redirects
-  if (res.statusCode >= 300 && origin.headers.location) {
+  if (origin.statusCode >= 300 && origin.headers.location) {
     const redir = origin.headers.location;
     const sourceHost = new URL(req.params.url);
     req.params.url = redir.startsWith("/") ? (sourceHost.origin + redir) : redir;
