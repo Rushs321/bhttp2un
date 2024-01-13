@@ -48,6 +48,15 @@ function _onRequestResponse(origin, req, res) {
     return origin.destroy();
   }
 
+  // handle redirects
+  if (res.statusCode >= 300 && origin.headers.location) {
+    const redir = origin.headers.location;
+    const sourceHost = new URL(req.params.url);
+    req.params.url = redir.startsWith("/") ? (sourceHost.origin + redir) : redir;
+    proxy(req, res);
+    return origin.destroy();
+  }
+
   copyHeaders(origin, res);
   res.setHeader("content-encoding", "identity");
   req.params.originType = origin.headers["content-type"] || "";
