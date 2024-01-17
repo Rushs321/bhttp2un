@@ -27,6 +27,7 @@ async function proxy(req, res) {
         "x-forwarded-for": req.headers["x-forwarded-for"] || req.ip,
         via: "1.1 bandwidth-hero",
       },
+      maxRedirections: 4
     });
     _onRequestResponse(origin, req, res);
   } catch (err) {
@@ -47,12 +48,8 @@ function _onRequestResponse(origin, req, res) {
     return redirect(req, res);
 
   // handle redirects
-  if (origin.statusCode >= 300 && origin.headers.location) {
-    const redir = origin.headers.location;
-    const sourceHost = new URL(req.params.url);
-    req.params.url = redir.startsWith("/") ? (sourceHost.origin + redir) : redir;
-    return proxy(req, res);
-  }
+  if (origin.statusCode >= 300 && origin.headers.location)
+    return redirect(req, res);
 
   copyHeaders(origin, res);
   res.setHeader("content-encoding", "identity");
