@@ -37,3 +37,23 @@ node server.js
 You may change / set `PORT` env variable if you want to listen to another port.
 
 If you think your forked cluster is less than 2, You could set `CLUSTERS` env variable with integer value depending how many clusters you would like to fork.
+
+## Using the server
+You could also use the server without the need for using bandwidth hero proxy.
+
+The following querystrings parameters is required on request:
+- `url`: URL of the image (required)
+- `jpeg`: Whenever to use jpeg format for compression instead of webp (Default: false)
+- `bw`: Convert the image into grayscale (Default: Yes)
+- `l`: Image quality (Default: 40% of the original image)
+
+Request URI Example:
+```
+https://bwhero.example.com/?url=https%3A%2F%2Fexample.com%2Fbig_image.jpg&bw=1&l=40
+```
+
+Response headers:
+- `x-original-size`: The original size of the image in bytes
+- `x-bytes-saved`: How many bytes was saved from the original image
+
+At some point, `x-proxy-bypass` may appears in header when the server prefers to proxy the non-image content to client.
