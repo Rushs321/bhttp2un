@@ -49,7 +49,7 @@ The following querystrings parameters is required on request:
 
 Request URI Example:
 ```
-https://bwhero.example.com/?url=https%3A%2F%2Fexample.com%2Fbig_image.jpg&bw=1&l=40
+https://bwhero.example.com/?url=https%3A%2F%2Fexample.com%2Fbig_image.jpg&bw=0&l=40
 ```
 
 Response headers:
