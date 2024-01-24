@@ -36,8 +36,11 @@ async function proxy(req, res) {
 }
 
 function _onRequestError(req, res, err) {
+  // Ignore invalid URL.
+  if (err.code === "ERR_INVALID_URL") return res.status(400).send("Invalid URL");
+
   /*
-   * When there's a error, Redirect then destroy the stream immediately.
+   * When there's a real error, Redirect then destroy the stream immediately.
    */
   redirect(req, res);
   console.error(err);
