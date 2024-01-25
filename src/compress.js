@@ -1,3 +1,4 @@
+"use strict";
 /*
  * compress.js
  * A module that compress a image.

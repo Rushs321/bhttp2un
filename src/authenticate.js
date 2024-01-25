@@ -1,3 +1,4 @@
+"use strict";
 const auth = require('basic-auth')
 const LOGIN = process.env.LOGIN
 const PASSWORD = process.env.PASSWORD

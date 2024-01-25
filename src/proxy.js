@@ -1,3 +1,4 @@
+"use strict";
 /*
  * proxy.js
  * The bandwidth hero proxy handler.
@@ -72,7 +73,7 @@ function _onRequestResponse(origin, req, res) {
 
     res.setHeader("x-proxy-bypass", 1);
 
-    for (headerName of ["accept-ranges", "content-type", "content-length", "content-range"]) {
+    for (const headerName of ["accept-ranges", "content-type", "content-length", "content-range"]) {
       if (headerName in origin.headers)
         res.setHeader(headerName, origin.headers[headerName]);
     }

@@ -1,3 +1,4 @@
+"use strict";
 function copyHeaders(source, target) {
   for (const [key, value] of Object.entries(source.headers)) {
     try {

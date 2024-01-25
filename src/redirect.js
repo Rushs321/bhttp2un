@@ -1,3 +1,4 @@
+"use strict";
 function redirect(req, res) {
   if (res.headersSent) return;
 
