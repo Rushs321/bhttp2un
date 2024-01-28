@@ -15,6 +15,7 @@ and user's IP address through to the origin host.
 - Cluster support
 - Change on codes, Including how it handle buffers
 - Added animation support (Which is CPU intensive. Disable by setting `NO_ANIMATE` in env variable)
+- Fixed CORS problems
 
 ## Deployment Requirement
 - Atleast [NodeJS](https://nodejs.org) >= 14 is installed.
