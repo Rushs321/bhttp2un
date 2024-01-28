@@ -58,6 +58,7 @@ function _onRequestResponse(origin, req, res) {
   copyHeaders(origin, res);
   res.setHeader("content-encoding", "identity");
   res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
   req.params.originType = origin.headers["content-type"] || "";
   req.params.originSize = origin.headers["content-length"] || "0";
 
