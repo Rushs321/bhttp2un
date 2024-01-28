@@ -59,6 +59,7 @@ function _onRequestResponse(origin, req, res) {
   res.setHeader("content-encoding", "identity");
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  res.setHeader("Cross-Origin-Embedder-Policy", "unsafe-none");
   req.params.originType = origin.headers["content-type"] || "";
   req.params.originSize = origin.headers["content-length"] || "0";
 
