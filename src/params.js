@@ -1,5 +1,5 @@
 "use strict";
-const DEFAULT_QUALITY = 40
+const DEFAULT_QUALITY = 1
 
 function params(req, res, next) {
   let url = req.query.url;
