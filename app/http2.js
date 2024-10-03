@@ -13,7 +13,7 @@
     // http2c makes if SSL is offloaded.
     const keyPath = './cert/privkey.pem';
     const certPath = './cert/fullchain.pem';
-    let ssl = true;
+    let ssl = false;
     let plain = true;
     if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
         ssl = {
