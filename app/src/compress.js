@@ -1,16 +1,14 @@
 "use strict";
 /*
  * compress.js
- * A module that compress a image.
+ * A module that compresses an image.
  * compress(httpRequest, httpResponse, ReadableStream);
  */
-const sharp = require('sharp')
-const redirect = require('./redirect')
-
-const sharpStream = _ => sharp({ animated: false});
+const sharp = require('sharp');
+const redirect = require('./redirect');
 
 function compress(req, res, input) {
-  const format = req.params.webp ? 'webp' : 'jpeg'
+  const format = req.params.webp ? 'webp' : 'jpeg';
 
   /*
    * Determine the uncompressed image size when there's no content-length header.
@@ -24,14 +22,14 @@ function compress(req, res, input) {
    * |x-original-size|Original photo size                |OriginSize                  |
    * |x-bytes-saved  |Saved bandwidth from original photo|OriginSize - Compressed Size|
    */
-  input.body.pipe(sharpStream()
+  input.body.pipe(sharp()
     .grayscale(req.params.grayscale)
     .toFormat(format, {
       quality: req.params.quality,
       progressive: true,
       optimizeScans: true
     })
-    .toBuffer((err, output, info) => _sendResponse(err, output, info, format, req, res)))
+    .toBuffer((err, output, info) => _sendResponse(err, output, info, format, req, res)));
 }
 
 function _sendResponse(err, output, info, format, req, res) {
